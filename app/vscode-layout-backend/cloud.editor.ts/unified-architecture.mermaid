@@ -1,0 +1,24 @@
+graph TD
+    subgraph Frontend
+        A[Universal Keyboard UI] -->|Commands| B(Command Dispatcher)
+        C[Voice Interface] -->|Transcripts| B
+        D[Bot Interface] -->|Natural Language| B
+    end
+
+    subgraph Backend
+        B -->|Routes| E[API Endpoints]
+        E --> F[Command Processor]
+        F --> G[File System Abstraction]
+        G --> H[Local File System]
+        G --> I[Cloud Storage]
+        F --> J[Shortcut Manager]
+        F --> K[Voice Processor]
+        F --> L[Bot Engine]
+        F --> M[Cloud Sync]
+    end
+
+    subgraph External
+        H -->|Files| N[User Devices]
+        I -->|Files| O[GitHub/GitLab/S3]
+        M -->|Sync| P[WebSockets]
+    end

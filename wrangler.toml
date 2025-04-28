@@ -1,0 +1,32 @@
+name = "codefusion-api"
+type = "javascript"
+account_id = ""
+workers_dev = true
+route = "api.your-app-domain.com/*"
+zone_id = ""
+
+[build]
+command = "npm run build"
+watch_dir = "src"
+
+[build.upload]
+format = "service-worker"
+
+[env.production]
+workers_dev = false
+route = "api.your-app-domain.com/*"
+zone_id = ""
+
+[env.production.vars]
+ENVIRONMENT = "production"
+
+[[kv_namespaces]]
+binding = "CODEFUSION_KV"
+id = ""
+
+[[r2_buckets]]
+binding = "STORAGE"
+bucket_name = "codefusion-storage"
+
+[triggers]
+crons = ["*/30 * * * *"] 

@@ -1,0 +1,32 @@
+[auth]
+site_url = "https://your-app-domain.com"
+additional_redirect_urls = ["https://your-app-domain.com/*"]
+jwt_expiry = 3600
+enable_signup = true
+
+[auth.external.github]
+enabled = true
+client_id = "env(GITHUB_CLIENT_ID)"
+secret = "env(GITHUB_CLIENT_SECRET)"
+
+[auth.external.gitlab]
+enabled = true
+client_id = "env(GITLAB_CLIENT_ID)"
+secret = "env(GITLAB_CLIENT_SECRET)"
+
+[db]
+shadow_database_url = "postgres://postgres:postgres@db:5432/postgres_shadow"
+
+[api]
+port = 54321
+schemas = ["public", "storage"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[studio]
+port = 54323
+
+[storage]
+backend = "s3"
+bucket = "env(AWS_S3_BUCKET)"
+region = "auto" 

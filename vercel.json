@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "env": {
+    "NEXT_PUBLIC_SUPABASE_URL": "@supabase_url",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@supabase_anon_key",
+    "GITHUB_CLIENT_ID": "@github_client_id",
+    "GITHUB_CLIENT_SECRET": "@github_client_secret",
+    "GITLAB_CLIENT_ID": "@gitlab_client_id",
+    "GITLAB_CLIENT_SECRET": "@gitlab_client_secret",
+    "JWT_SECRET": "@jwt_secret",
+    "CLOUDFLARE_ACCOUNT_ID": "@cloudflare_account_id",
+    "CLOUDFLARE_API_TOKEN": "@cloudflare_api_token",
+    "AWS_S3_BUCKET": "@aws_s3_bucket",
+    "AWS_ACCESS_KEY_ID": "@aws_access_key_id",
+    "AWS_SECRET_ACCESS_KEY": "@aws_secret_access_key",
+    "SENDGRID_API_KEY": "@sendgrid_api_key",
+    "SENDGRID_FROM_EMAIL": "@sendgrid_from_email",
+    "SENDGRID_WELCOME_TEMPLATE": "@sendgrid_welcome_template",
+    "SENDGRID_PASSWORD_RESET_TEMPLATE": "@sendgrid_password_reset_template",
+    "SENDGRID_NOTIFICATION_TEMPLATE": "@sendgrid_notification_template",
+    "MIXPANEL_TOKEN": "@mixpanel_token",
+    "NEXT_PUBLIC_APP_URL": "@app_url"
+  },
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ]
+} 

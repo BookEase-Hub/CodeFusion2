@@ -1,0 +1,473 @@
+"use client"
+
+import { useState } from "react"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Search, MoreHorizontal, UserPlus, Download, Filter, X, ChevronLeft, ChevronRight } from "lucide-react"
+
+// Mock user data
+const mockUsers = [
+  {
+    id: "1",
+    name: "John Doe",
+    email: "john@example.com",
+    role: "user",
+    status: "active",
+    subscription: "premium",
+    lastActive: "2 hours ago",
+    projects: 12,
+    aiUsage: 85,
+  },
+  {
+    id: "2",
+    name: "Jane Smith",
+    email: "jane@example.com",
+    role: "admin",
+    status: "active",
+    subscription: "premium",
+    lastActive: "5 minutes ago",
+    projects: 8,
+    aiUsage: 92,
+  },
+  {
+    id: "3",
+    name: "Bob Johnson",
+    email: "bob@example.com",
+    role: "user",
+    status: "inactive",
+    subscription: "free",
+    lastActive: "3 days ago",
+    projects: 3,
+    aiUsage: 12,
+  },
+  {
+    id: "4",
+    name: "Alice Williams",
+    email: "alice@example.com",
+    role: "user",
+    status: "active",
+    subscription: "free",
+    lastActive: "1 day ago",
+    projects: 5,
+    aiUsage: 45,
+  },
+  {
+    id: "5",
+    name: "Charlie Brown",
+    email: "charlie@example.com",
+    role: "user",
+    status: "active",
+    subscription: "premium",
+    lastActive: "4 hours ago",
+    projects: 7,
+    aiUsage: 78,
+  },
+  {
+    id: "6",
+    name: "Diana Prince",
+    email: "diana@example.com",
+    role: "user",
+    status: "active",
+    subscription: "free",
+    lastActive: "12 hours ago",
+    projects: 2,
+    aiUsage: 23,
+  },
+  {
+    id: "7",
+    name: "Ethan Hunt",
+    email: "ethan@example.com",
+    role: "user",
+    status: "inactive",
+    subscription: "free",
+    lastActive: "5 days ago",
+    projects: 0,
+    aiUsage: 0,
+  },
+  {
+    id: "8",
+    name: "Fiona Gallagher",
+    email: "fiona@example.com",
+    role: "user",
+    status: "active",
+    subscription: "premium",
+    lastActive: "8 hours ago",
+    projects: 9,
+    aiUsage: 67,
+  },
+]
+
+export default function UserManagement() {
+  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([])
+  const [roleFilter, setRoleFilter] = useState<string>("all")
+  const [statusFilter, setStatusFilter] = useState<string>("all")
+  const [subscriptionFilter, setSubscriptionFilter] = useState<string>("all")
+  const [showFilters, setShowFilters] = useState(false)
+  const [showUserDialog, setShowUserDialog] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const usersPerPage = 5
+
+  // Filter users based on search query and filters
+  const filteredUsers = mockUsers.filter((user) => {
+    const matchesSearch =
+      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchQuery.toLowerCase())
+
+    const matchesRole = roleFilter === "all" || user.role === roleFilter
+    const matchesStatus = statusFilter === "all" || user.status === statusFilter
+    const matchesSubscription = subscriptionFilter === "all" || user.subscription === subscriptionFilter
+
+    return matchesSearch && matchesRole && matchesStatus && matchesSubscription
+  })
+
+  // Pagination
+  const indexOfLastUser = currentPage * usersPerPage
+  const indexOfFirstUser = indexOfLastUser - usersPerPage
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser)
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage)
+
+  const handleSelectAllUsers = () => {
+    if (selectedUsers.length === currentUsers.length) {
+      setSelectedUsers([])
+    } else {
+      setSelectedUsers(currentUsers.map((user) => user.id))
+    }
+  }
+
+  const handleSelectUser = (userId: string) => {
+    if (selectedUsers.includes(userId)) {
+      setSelectedUsers(selectedUsers.filter((id) => id !== userId))
+    } else {
+      setSelectedUsers([...selectedUsers, userId])
+    }
+  }
+
+  const handleRoleChange = (userId: string, newRole: string) => {
+    // In a real app, this would update the user's role in the database
+    console.log(`Changing user ${userId} role to ${newRole}`)
+  }
+
+  const handleSubscriptionChange = (userId: string, newSubscription: string) => {
+    // In a real app, this would update the user's subscription in the database
+    console.log(`Changing user ${userId} subscription to ${newSubscription}`)
+  }
+
+  const handleStatusChange = (userId: string, newStatus: boolean) => {
+    // In a real app, this would update the user's status in the database
+    console.log(`Changing user ${userId} status to ${newStatus ? "active" : "inactive"}`)
+  }
+
+  const resetFilters = () => {
+    setRoleFilter("all")
+    setStatusFilter("all")
+    setSubscriptionFilter("all")
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
+        <p className="text-muted-foreground">Manage users, roles, and subscriptions across the platform.</p>
+      </div>
+
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-1 items-center gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Search users..."
+              className="w-full rounded-lg pl-8"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <Button variant="outline" size="sm" onClick={() => setShowFilters(!showFilters)}>
+            <Filter className="mr-2 h-4 w-4" />
+            Filters
+            {(roleFilter !== "all" || statusFilter !== "all" || subscriptionFilter !== "all") && (
+              <Badge className="ml-2 rounded-full px-1" variant="secondary">
+                {[
+                  roleFilter !== "all" ? 1 : 0,
+                  statusFilter !== "all" ? 1 : 0,
+                  subscriptionFilter !== "all" ? 1 : 0,
+                ].reduce((a, b) => a + b, 0)}
+              </Badge>
+            )}
+          </Button>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm">
+            <Download className="mr-2 h-4 w-4" />
+            Export
+          </Button>
+          <Button size="sm" onClick={() => setShowUserDialog(true)}>
+            <UserPlus className="mr-2 h-4 w-4" />
+            Add User
+          </Button>
+        </div>
+      </div>
+
+      {showFilters && (
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="role-filter">Role</Label>
+                <Select value={roleFilter} onValueChange={setRoleFilter}>
+                  <SelectTrigger id="role-filter" className="w-[150px]">
+                    <SelectValue placeholder="Filter by role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Roles</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="user">User</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="status-filter">Status</Label>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger id="status-filter" className="w-[150px]">
+                    <SelectValue placeholder="Filter by status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Statuses</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="subscription-filter">Subscription</Label>
+                <Select value={subscriptionFilter} onValueChange={setSubscriptionFilter}>
+                  <SelectTrigger id="subscription-filter" className="w-[150px]">
+                    <SelectValue placeholder="Filter by subscription" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Plans</SelectItem>
+                    <SelectItem value="free">Free</SelectItem>
+                    <SelectItem value="premium">Premium</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button variant="ghost" size="sm" className="mt-auto" onClick={resetFilters}>
+                <X className="mr-2 h-4 w-4" />
+                Reset Filters
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      <Card>
+        <CardHeader className="p-4">
+          <CardTitle>Users</CardTitle>
+          <CardDescription>
+            {filteredUsers.length} users found
+            {selectedUsers.length > 0 && ` (${selectedUsers.length} selected)`}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[50px]">
+                  <Checkbox
+                    checked={currentUsers.length > 0 && selectedUsers.length === currentUsers.length}
+                    onCheckedChange={handleSelectAllUsers}
+                    aria-label="Select all users"
+                  />
+                </TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Subscription</TableHead>
+                <TableHead>Last Active</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {currentUsers.map((user) => (
+                <TableRow key={user.id}>
+                  <TableCell>
+                    <Checkbox
+                      checked={selectedUsers.includes(user.id)}
+                      onCheckedChange={() => handleSelectUser(user.id)}
+                      aria-label={`Select ${user.name}`}
+                    />
+                  </TableCell>
+                  <TableCell className="font-medium">{user.name}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>
+                    <Select defaultValue={user.role} onValueChange={(value) => handleRoleChange(user.id, value)}>
+                      <SelectTrigger className="h-8 w-[100px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="user">User</SelectItem>
+                        <SelectItem value="admin">Admin</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center">
+                      <Switch
+                        checked={user.status === "active"}
+                        onCheckedChange={(checked) => handleStatusChange(user.id, checked)}
+                      />
+                      <span className="ml-2 text-xs">{user.status === "active" ? "Active" : "Inactive"}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Select
+                      defaultValue={user.subscription}
+                      onValueChange={(value) => handleSubscriptionChange(user.id, value)}
+                    >
+                      <SelectTrigger className="h-8 w-[100px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="free">Free</SelectItem>
+                        <SelectItem value="premium">Premium</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
+                  <TableCell>{user.lastActive}</TableCell>
+                  <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <MoreHorizontal className="h-4 w-4" />
+                          <span className="sr-only">Actions</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem>View Details</DropdownMenuItem>
+                        <DropdownMenuItem>Edit User</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="text-destructive">Delete User</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+        <CardFooter className="flex items-center justify-between p-4">
+          <div className="text-sm text-muted-foreground">
+            Showing {indexOfFirstUser + 1} to {Math.min(indexOfLastUser, filteredUsers.length)} of{" "}
+            {filteredUsers.length} users
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <div className="text-sm">
+              Page {currentPage} of {totalPages}
+            </div>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+              disabled={currentPage === totalPages}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </CardFooter>
+      </Card>
+
+      {/* Add User Dialog */}
+      <Dialog open={showUserDialog} onOpenChange={setShowUserDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New User</DialogTitle>
+            <DialogDescription>
+              Create a new user account. The user will receive an email with login instructions.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
+                Name
+              </Label>
+              <Input id="name" placeholder="John Doe" className="col-span-3" />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="email" className="text-right">
+                Email
+              </Label>
+              <Input id="email" placeholder="john@example.com" className="col-span-3" />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="role" className="text-right">
+                Role
+              </Label>
+              <Select defaultValue="user">
+                <SelectTrigger id="role" className="col-span-3">
+                  <SelectValue placeholder="Select role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="user">User</SelectItem>
+                  <SelectItem value="admin">Admin</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="subscription" className="text-right">
+                Subscription
+              </Label>
+              <Select defaultValue="free">
+                <SelectTrigger id="subscription" className="col-span-3">
+                  <SelectValue placeholder="Select subscription" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="free">Free</SelectItem>
+                  <SelectItem value="premium">Premium</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowUserDialog(false)}>
+              Cancel
+            </Button>
+            <Button>Create User</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  )
+}
+
